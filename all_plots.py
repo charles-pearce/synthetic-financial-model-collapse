@@ -74,7 +74,6 @@ def plot_collapse(df, title, fname):
     ax.set_xlabel("Generation")
     ax.set_ylabel("Error relative to true distribution")
     ax.set_title(title)
-    # Extra headroom keeps the legend clear of the rising curves.
     ax.set_ylim(top=ax.get_ylim()[1] * 1.25)
     ax.legend()
     fig.savefig(os.path.join(OUT, fname))
@@ -119,7 +118,6 @@ def plot_accumulation2(df, title, fname, repl_df=None):
     gens = sorted(df.generation.unique())
     fig, ax = plt.subplots(figsize=(4, 2.7))
 
-    # The replacement line is drawn first so it sits behind the accumulation lines.
     if repl_df is not None:
         grouped = repl_df.groupby("generation")["var_error"]
         median = grouped.median()
@@ -281,7 +279,7 @@ def plot_gaussian_replication(fname="gaussian_replication"):
         ax.set(xlabel=xlabel, ylabel=ylabel, title=title)
         if yscale:
             ax.set_yscale(yscale)
-        # ax.set_ylim(top=ax.get_ylim()[1] * 1.25)
+        ax.set_ylim(top=ax.get_ylim()[1] * 1.25)
         if legend_handles:
             ax.legend(handles=legend_handles)
         fig.tight_layout()
@@ -316,7 +314,7 @@ def plot_gaussian_replication(fname="gaussian_replication"):
 
     # Third panel compares the error in the one percent Value at Risk with the
     # error in the mean on a logarithmic scale. Solid lines show the tail and
-    # dashed lines show the bulk.
+    # dashed lines show the bulk (mean).
     def draw_tail(ax):
         for n in sample_sizes:
             mu_hist, sigma_hist = results[n]
@@ -331,28 +329,25 @@ def plot_gaussian_replication(fname="gaussian_replication"):
 
 print("Generating figures:")
 
-# The active calls below generate the figures used in the thesis. The
-# commented calls generate alternative versions and can be reactivated.
-
 plot_example_returns()
-# plot_gaussian_replication()
+plot_gaussian_replication()
 
 plot_collapse(load("wgangp_gbm_replacement_final.csv"),    "WGAN-GP, GBM, replacement",    "collapse_gbm_final3.pdf")
 plot_collapse(load("wgangp_merton_replacement_final.csv"), "WGAN-GP, Merton, replacement", "collapse_merton_final3.pdf")
 plot_collapse(load("wgangp_heston_replacement_final.csv"),    "WGAN-GP, Heston, replacement",    "collapse_heston_wgangp_final3.pdf")
 plot_collapse(load("quantgan_heston_replacement_final.csv"), "QuantGAN, Heston, replacement", "collapse_heston_final3.pdf")
 
-# plot_accumulation(load("wgangp_gbm_accumulation_final.csv"),    "WGAN-GP, GBM, accumulation",    "accumulation_gbm_final3.pdf")
-# plot_accumulation(load("wgangp_merton_accumulation_final.csv"), "WGAN-GP, Merton, accumulation", "accumulation_merton_final3.pdf")
-# plot_accumulation(load("quantgan_heston_accumulation_final.csv"), "QuantGAN, Heston, accumulation", "accumulation_heston_final3.pdf")
+plot_accumulation(load("wgangp_gbm_accumulation_final.csv"),    "WGAN-GP, GBM, accumulation",    "accumulation_gbm_final3.pdf")
+plot_accumulation(load("wgangp_merton_accumulation_final.csv"), "WGAN-GP, Merton, accumulation", "accumulation_merton_final3.pdf")
+plot_accumulation(load("quantgan_heston_accumulation_final.csv"), "QuantGAN, Heston, accumulation", "accumulation_heston_final3.pdf")
 
 plot_accumulation2(load("wgangp_gbm_accumulation_final.csv"),   "WGAN-GP, GBM, accumulation",      "accumulation_gbm1.pdf",    repl_df=load("wgangp_gbm_replacement_final.csv"))
 plot_accumulation2(load("wgangp_merton_accumulation_final.csv"),   "WGAN-GP, Merton, accumulation",   "accumulation_merton1.pdf", repl_df=load("wgangp_merton_replacement_final.csv"))
 plot_accumulation2(load("quantgan_heston_accumulation_final.csv"),   "QuantGAN, Heston, accumulation",  "accumulation_heston1.pdf", repl_df=load("quantgan_heston_replacement_final.csv"))
 
-# plot_clustering(load("quantgan_heston_replacement_final.csv"), "QuantGAN, Heston, volatility clustering", "clustering_heston_final3.pdf")
-# plot_accumulation_acf(load("quantgan_heston_accumulation_final.csv"), "QuantGAN, Heston, accumulation", "accumulation_clustering_heston_final3.pdf")
-# heston = Heston()
-# plot_heston_acf(heston.sample(5000, 100, rng), "Heston stylised facts", "heston_acf_final3.pdf")
+plot_clustering(load("quantgan_heston_replacement_final.csv"), "QuantGAN, Heston, volatility clustering", "clustering_heston_final3.pdf")
+plot_accumulation_acf(load("quantgan_heston_accumulation_final.csv"), "QuantGAN, Heston, accumulation", "accumulation_clustering_heston_final3.pdf")
+heston = Heston()
+plot_heston_acf(heston.sample(5000, 100, rng), "Heston stylised facts", "heston_acf_final3.pdf")
 
 print("Done.")

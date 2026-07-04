@@ -18,7 +18,6 @@ src/
   gaussian_replication.py  One-dimensional Gaussian baseline experiment
 run_experiment.py          Runs the experiments and writes per-generation metrics to results/
 analyse_results.py         Reproduces every table and in-text statistic from the CSVs
-all_tabels.py              Earlier plain-text summary of the tables
 all_plots.py               Generates every figure from the CSVs
 results/                   Metric CSVs, one row per generation and seed
 figures/                   Generated figures
